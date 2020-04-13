@@ -5,20 +5,15 @@ function Reviews({ reviews }) {
   return (
     <>
       {reviews &&
-        reviews.map((review) => (
-          <Item.Group divided>
+        reviews.map((review, i) => (
+          <Item.Group divided key={i}>
             <Item>
               <Item.Content>
                 <Item.Header as='h3'>
                   <Rating maxRating={5} defaultRating={review.rating} icon='star' disabled />
                   {' ' + review.firstName + ' ' + review.lastName}
                 </Item.Header>
-                <Item.Content>
-                  <Item.Header as='h2'>{review.title}</Item.Header>
-                </Item.Content>
-                {/* <Item.Meta>Description</Item.Meta> */}
                 <Item.Description>{review.comment}</Item.Description>
-                {/* <Item.Extra>Additional Details</Item.Extra> */}
               </Item.Content>
             </Item>
             <Divider />

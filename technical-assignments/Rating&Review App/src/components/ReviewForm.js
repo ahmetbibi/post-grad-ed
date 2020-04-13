@@ -1,9 +1,19 @@
 import React from 'react';
-import { Form, Input, TextArea, Button, Rating, Modal } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button, Rating, Modal, Message } from 'semantic-ui-react';
 
 import './styles/ReviewForm.scss';
 
-function ReviewForm({ handleChange, handleSubmit, handleRate, rating, handleOpen, modalOpen }) {
+function ReviewForm({
+  handleChange,
+  handleSubmit,
+  handleRate,
+  rating,
+  handleOpen,
+  modalOpen,
+  handleClose,
+  validation,
+  success,
+}) {
   return (
     <>
       <Modal
@@ -17,7 +27,14 @@ function ReviewForm({ handleChange, handleSubmit, handleRate, rating, handleOpen
         <Modal.Header className='review-main-header'>Write a Review</Modal.Header>
         <Modal.Content>
           <Modal.Description>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} error={validation} success={success}>
+              <Message error header='Oops!' content='Rating, First name and Last name required!' />
+              <Message
+                success
+                header='Success!'
+                content='Your review has been sent.'
+                icon='check'
+              />
               <Form.Field
                 name='ratingValue'
                 value={rating}
@@ -25,7 +42,7 @@ function ReviewForm({ handleChange, handleSubmit, handleRate, rating, handleOpen
                 maxRating={5}
                 defaultRating={0}
                 icon='star'
-                size='large'
+                size='huge'
                 onRate={handleRate}
               />
               <Form.Group widths='equal'>
@@ -44,13 +61,7 @@ function ReviewForm({ handleChange, handleSubmit, handleRate, rating, handleOpen
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Field
-                control={Input}
-                name='title'
-                label='Title'
-                placeholder='Comment title'
-                onChange={handleChange}
-              />
+
               <Form.Field
                 control={TextArea}
                 name='comment'
@@ -58,7 +69,21 @@ function ReviewForm({ handleChange, handleSubmit, handleRate, rating, handleOpen
                 placeholder='Tell us your experience about this product...'
                 onChange={handleChange}
               />
-              <Form.Field control={Button}>Submit</Form.Field>
+              <Form.Group widths='equal'>
+                <Form.Field control={Button} positive floated='left'>
+                  Submit
+                </Form.Field>
+                {/* <Button content="Cancel" negative floated='right'></Button> */}
+                <Form.Field
+                  control={Button}
+                  type='button'
+                  negative
+                  floated='right'
+                  onClick={handleClose}
+                >
+                  Cancel
+                </Form.Field>
+              </Form.Group>
             </Form>
           </Modal.Description>
         </Modal.Content>

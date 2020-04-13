@@ -8,7 +8,6 @@ function Product({ products }) {
   const initialState = {
     firstName: '',
     lastName: '',
-    title: '',
     comment: '',
   };
 
@@ -16,14 +15,38 @@ function Product({ products }) {
   const [rating, setRating] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [validation, setValidation] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  // To wait to see the success message for 3 seconds
+  React.useEffect(() => {
+    let timeout;
+    if (success) {
+      timeout = setTimeout(() => {
+        setSuccess(false);
+        setModalOpen(false);
+      }, 3000);
+    }
+    if (validation) {
+      timeout = setTimeout(() => setValidation(false), 3000);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [success, modalOpen, validation]);
 
   // To get the id parameter from the path
   let { id } = useParams();
 
-  const { name, mediaUrl, price, sku } = products[id - 1];
+  const { name, mediaUrl, price, sku, description } = products[id - 1];
 
   function handleOpen() {
     setModalOpen(true);
+  }
+
+  function handleClose() {
+    setModalOpen(false);
   }
 
   function handleRate(e, { rating }) {
@@ -39,13 +62,22 @@ function Product({ products }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    const { firstName, lastName, title, comment } = review;
-    reviews.push({ firstName, lastName, title, comment, rating });
-    setReviews(reviews);
-    setReview(initialState);
-    setRating(0);
-    setModalOpen(false);
-    console.log(reviews);
+    const { firstName, lastName, comment } = review;
+    if (rating === 0) {
+      setValidation(true);
+    } else if (firstName === '' || lastName === '') {
+      setValidation(true);
+    } else {
+      reviews.push({ firstName, lastName, comment, rating });
+      setReviews(reviews);
+      setReview(initialState);
+      setRating(0);
+      setValidation(false);
+      setSuccess(true);
+
+      // setModalOpen(false);
+      console.log(reviews);
+    }
   }
 
   return (
@@ -71,18 +103,16 @@ function Product({ products }) {
                 rating={rating}
                 handleOpen={handleOpen}
                 modalOpen={modalOpen}
+                handleClose={handleClose}
+                validation={validation}
+                success={success}
               />
             </Item.Extra>
           </Item.Content>
         </Item>
       </Item.Group>
       <Header as='h3'>About this product</Header>
-      <p>
-        Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque
-        sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris
-        sit amet eros. Suspendisse accumsan tortor quis turpis. Sed ante. Vivamus tortor. Duis
-        mattis egestas metus.
-      </p>
+      <p>{description}</p>
       <Item.Extra>
         <Link to='/' className='btn'>
           Back To Products
