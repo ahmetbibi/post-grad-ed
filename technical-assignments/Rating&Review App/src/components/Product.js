@@ -1,43 +1,28 @@
-import React, { useState } from 'react';
-import { Item, Label, Header, Rating, Divider } from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react';
+import { Item, Label, Header, Divider, Button } from 'semantic-ui-react';
 import { useParams, Link } from 'react-router-dom';
 import ReviewForm from './ReviewForm';
 import Reviews from './Reviews';
+import Rating from 'react-rating';
 
-function Product({ products }) {
-  const initialState = {
-    firstName: '',
-    lastName: '',
-    comment: '',
-  };
+// To calculate the average rating value
+function calculateAverage(reviews) {
+  const total = reviews.reduce((acc, review) => {
+    acc += review.rating;
+    return acc;
+  }, 0);
+  return (total / reviews.length).toFixed(1);
+}
 
-  const [review, setReview] = useState(initialState);
-  const [rating, setRating] = useState(0);
-  const [reviews, setReviews] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [validation, setValidation] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  // To wait to see the success message for 3 seconds
-  React.useEffect(() => {
-    let timeout;
-    if (success) {
-      timeout = setTimeout(() => {
-        setSuccess(false);
-        setModalOpen(false);
-      }, 3000);
-    }
-    if (validation) {
-      timeout = setTimeout(() => setValidation(false), 3000);
-    }
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [success, modalOpen, validation]);
-
-  // To get the id parameter from the path
+function Product({ products, reviews, setReviews }) {
   let { id } = useParams();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [average, setAverage] = useState(0);
+
+  useEffect(() => {
+    const averageValue = calculateAverage(reviews);
+    setAverage(averageValue);
+  }, [reviews]);
 
   const { name, mediaUrl, price, sku, description } = products[id - 1];
 
@@ -45,39 +30,11 @@ function Product({ products }) {
     setModalOpen(true);
   }
 
-  function handleClose() {
-    setModalOpen(false);
-  }
-
-  function handleRate(e, { rating }) {
-    setRating(() => Number(rating));
-    console.log(rating);
-  }
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setReview((preState) => ({ ...preState, [name]: value }));
-    console.log(review);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    const { firstName, lastName, comment } = review;
-    if (rating === 0) {
-      setValidation(true);
-    } else if (firstName === '' || lastName === '') {
-      setValidation(true);
-    } else {
-      reviews.push({ firstName, lastName, comment, rating });
-      setReviews(reviews);
-      setReview(initialState);
-      setRating(0);
-      setValidation(false);
-      setSuccess(true);
-
-      // setModalOpen(false);
-      console.log(reviews);
+  function handleClose(review) {
+    if (review) {
+      setReviews([...reviews, review]);
     }
+    setModalOpen(false);
   }
 
   return (
@@ -92,21 +49,19 @@ function Product({ products }) {
               <Label>SKU: {sku} </Label>
             </Item.Description>
             <Item.Extra>
-              <Rating maxRating={5} defaultRating={4} disabled icon='star' size='huge' />
+              <Rating
+                className='star-icon'
+                initialRating={average}
+                readonly={true}
+                emptySymbol='fa fa-star-o fa-2x'
+                fullSymbol='fa fa-star fa-2x'
+                fractions={10}
+              />
             </Item.Extra>
             <Divider />
             <Item.Extra>
-              <ReviewForm
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-                handleRate={handleRate}
-                rating={rating}
-                handleOpen={handleOpen}
-                modalOpen={modalOpen}
-                handleClose={handleClose}
-                validation={validation}
-                success={success}
-              />
+              <Button onClick={handleOpen}>Write a review</Button>
+              <ReviewForm modalOpen={modalOpen} handleClose={handleClose} />
             </Item.Extra>
           </Item.Content>
         </Item>
