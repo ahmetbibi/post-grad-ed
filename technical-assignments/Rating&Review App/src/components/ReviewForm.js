@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import { Form, Input, TextArea, Button, Rating, Modal } from 'semantic-ui-react';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, TextArea, Button, Rating, Modal, Message } from 'semantic-ui-react';
 
 import './styles/ReviewForm.scss';
 
-const initialState = {
-  firstName: '',
-  lastName: '',
-  comment: '',
-  rating: 0,
-};
+function ReviewForm({ modalOpen, handleClose, productId }) {
+  const initialState = {
+    firstName: '',
+    lastName: '',
+    comment: '',
+    rating: 0,
+    id: Number(productId),
+  };
 
-function ReviewForm({ modalOpen, handleClose }) {
   const [review, setReview] = useState(initialState);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setError(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [error]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -24,7 +33,12 @@ function ReviewForm({ modalOpen, handleClose }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleClose(review);
+    if (review.rating !== 0) {
+      handleClose(review);
+      setReview(initialState);
+    } else {
+      setError(true);
+    }
   }
 
   return (
@@ -32,7 +46,8 @@ function ReviewForm({ modalOpen, handleClose }) {
       <Modal.Header className='review-main-header'>Write a Review</Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} error={error}>
+            <Message error content='Please give a review' />
             <Form.Field
               name='ratingValue'
               value={review.rating}
@@ -40,9 +55,11 @@ function ReviewForm({ modalOpen, handleClose }) {
               maxRating={5}
               defaultRating={0}
               icon='star'
-              size='huge'
+              size='massive'
               onRate={handleRate}
+              required={true}
             />
+
             <Form.Group widths='equal'>
               <Form.Field
                 control={Input}

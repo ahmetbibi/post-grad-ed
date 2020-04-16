@@ -4,14 +4,18 @@ import { useParams, Link } from 'react-router-dom';
 import ReviewForm from './ReviewForm';
 import Reviews from './Reviews';
 import Rating from 'react-rating';
+import './styles/Product.scss';
 
 // To calculate the average rating value
-function calculateAverage(reviews) {
-  const total = reviews.reduce((acc, review) => {
+function calculateAverage(reviews, id) {
+  const filteredReviews = reviews.filter((review) => Number(review.id) === Number(id));
+
+  const total = filteredReviews.reduce((acc, review) => {
     acc += review.rating;
     return acc;
   }, 0);
-  return (total / reviews.length).toFixed(1);
+
+  return (total / filteredReviews.length).toFixed(1);
 }
 
 function Product({ products, reviews, setReviews }) {
@@ -20,9 +24,9 @@ function Product({ products, reviews, setReviews }) {
   const [average, setAverage] = useState(0);
 
   useEffect(() => {
-    const averageValue = calculateAverage(reviews);
+    const averageValue = calculateAverage(reviews, id);
     setAverage(averageValue);
-  }, [reviews]);
+  }, [reviews, id]);
 
   const { name, mediaUrl, price, sku, description } = products[id - 1];
 
@@ -48,20 +52,21 @@ function Product({ products, reviews, setReviews }) {
               <p>${price}</p>
               <Label>SKU: {sku} </Label>
             </Item.Description>
-            <Item.Extra>
+            <Item.Description>
               <Rating
-                className='star-icon'
+                className='star-icon rating'
                 initialRating={average}
                 readonly={true}
                 emptySymbol='fa fa-star-o fa-2x'
                 fullSymbol='fa fa-star fa-2x'
                 fractions={10}
-              />
-            </Item.Extra>
+              />{' '}
+              <span className='average'>{isNaN(average) ? '' : average}</span>
+            </Item.Description>
             <Divider />
             <Item.Extra>
               <Button onClick={handleOpen}>Write a review</Button>
-              <ReviewForm modalOpen={modalOpen} handleClose={handleClose} />
+              <ReviewForm modalOpen={modalOpen} handleClose={handleClose} productId={id} />
             </Item.Extra>
           </Item.Content>
         </Item>
@@ -76,7 +81,7 @@ function Product({ products, reviews, setReviews }) {
       <Divider />
 
       <Header as='h1'>Reviews</Header>
-      <Reviews reviews={reviews} />
+      <Reviews reviews={reviews} productId={Number(id)} />
     </>
   );
 }
