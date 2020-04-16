@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, TextArea, Button, Rating, Modal, Message } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Form, Input, TextArea, Button, Rating, Modal } from 'semantic-ui-react';
 
 import './styles/ReviewForm.scss';
 
@@ -13,14 +13,6 @@ function ReviewForm({ modalOpen, handleClose, productId }) {
   };
 
   const [review, setReview] = useState(initialState);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setError(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [error]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -33,12 +25,8 @@ function ReviewForm({ modalOpen, handleClose, productId }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (review.rating !== 0) {
-      handleClose(review);
-      setReview(initialState);
-    } else {
-      setError(true);
-    }
+    handleClose(review);
+    setReview(initialState);
   }
 
   return (
@@ -46,8 +34,7 @@ function ReviewForm({ modalOpen, handleClose, productId }) {
       <Modal.Header className='review-main-header'>Write a Review</Modal.Header>
       <Modal.Content>
         <Modal.Description>
-          <Form onSubmit={handleSubmit} error={error}>
-            <Message error content='Please give a review' />
+          <Form onSubmit={handleSubmit}>
             <Form.Field
               name='ratingValue'
               value={review.rating}
@@ -87,7 +74,7 @@ function ReviewForm({ modalOpen, handleClose, productId }) {
               onChange={handleChange}
             />
             <Form.Group widths='equal'>
-              <Form.Field control={Button} positive floated='left'>
+              <Form.Field control={Button} positive floated='left' disabled={review.rating === 0}>
                 Submit
               </Form.Field>
               <Form.Field
@@ -95,7 +82,10 @@ function ReviewForm({ modalOpen, handleClose, productId }) {
                 type='button'
                 negative
                 floated='right'
-                onClick={() => handleClose(null)}
+                onClick={() => {
+                  handleClose(null);
+                  setReview(initialState);
+                }}
               >
                 Cancel
               </Form.Field>
