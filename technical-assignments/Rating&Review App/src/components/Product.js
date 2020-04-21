@@ -36,7 +36,7 @@ function Product({ products, reviews, setReviews }) {
 
   function handleClose(review) {
     if (review) {
-      setReviews([...reviews, { ...review, id: Number(id) }]);
+      setReviews([...reviews, { ...review, id }]);
     }
     setModalOpen(false);
   }
