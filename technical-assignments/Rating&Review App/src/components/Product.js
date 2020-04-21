@@ -19,7 +19,7 @@ function calculateAverage(reviews, id) {
 }
 
 function Product({ products, reviews, setReviews }) {
-  let { id } = useParams();
+  const { id } = useParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [average, setAverage] = useState(0);
 
@@ -36,7 +36,7 @@ function Product({ products, reviews, setReviews }) {
 
   function handleClose(review) {
     if (review) {
-      setReviews([...reviews, review]);
+      setReviews([...reviews, { ...review, id: Number(id) }]);
     }
     setModalOpen(false);
   }
@@ -66,7 +66,7 @@ function Product({ products, reviews, setReviews }) {
             <Divider />
             <Item.Extra>
               <Button onClick={handleOpen}>Write a review</Button>
-              <ReviewForm modalOpen={modalOpen} handleClose={handleClose} productId={id} />
+              <ReviewForm modalOpen={modalOpen} handleClose={handleClose} />
             </Item.Extra>
           </Item.Content>
         </Item>

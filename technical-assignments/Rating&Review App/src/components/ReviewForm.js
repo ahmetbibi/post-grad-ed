@@ -3,15 +3,14 @@ import { Form, Input, TextArea, Button, Rating, Modal } from 'semantic-ui-react'
 
 import './styles/ReviewForm.scss';
 
-function ReviewForm({ modalOpen, handleClose, productId }) {
-  const initialState = {
-    firstName: '',
-    lastName: '',
-    comment: '',
-    rating: 0,
-    id: Number(productId),
-  };
+const initialState = {
+  firstName: '',
+  lastName: '',
+  comment: '',
+  rating: 0,
+};
 
+function ReviewForm({ modalOpen, handleClose }) {
   const [review, setReview] = useState(initialState);
 
   function handleChange(e) {
