@@ -83,7 +83,9 @@ function Product({ products, reviews, setReviews }) {
       <Divider />
 
       <Header as='h1'>Reviews</Header>
-      {reviews.length === 0 && <p>No reviews...</p>}
+      {reviews.filter((review) => Number(review.id) === Number(id)).length === 0 && (
+        <p>No reviews...</p>
+      )}
       <Reviews reviews={reviews} productId={Number(id)} />
     </>
   );
