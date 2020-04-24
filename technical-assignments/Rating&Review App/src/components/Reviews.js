@@ -1,6 +1,6 @@
 import React from 'react';
 import { Item, Rating, Divider } from 'semantic-ui-react';
-import './styles/Reviews.scss';
+import ReviewItem from './styled-components/ReviewItem';
 
 function Reviews({ reviews, productId }) {
   const filteredReviews = reviews.filter((review) => Number(review.id) === productId);
@@ -10,12 +10,12 @@ function Reviews({ reviews, productId }) {
         <Item.Content>
           <Item.Header as='h2'>
             <Rating maxRating={5} defaultRating={review.rating} icon='star' disabled size='huge' />
-            <span className='reviews-rating'>{' ' + review.firstName + ' ' + review.lastName}</span>
+            <ReviewItem>{' ' + review.firstName + ' ' + review.lastName}</ReviewItem>
           </Item.Header>
           <Item.Description>{review.comment}</Item.Description>
         </Item.Content>
       </Item>
-      <Divider />
+      <Divider hidden />
     </Item.Group>
   ));
 }

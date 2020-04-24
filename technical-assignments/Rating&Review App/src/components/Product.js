@@ -4,7 +4,8 @@ import { useParams, Link } from 'react-router-dom';
 import ReviewForm from './ReviewForm';
 import Reviews from './Reviews';
 import Rating from 'react-rating';
-import './styles/Product.scss';
+import Average from './styled-components/Average';
+import RatingContainer from './styled-components/RatingContainer';
 
 // To calculate the average rating value
 function calculateAverage(reviews, id) {
@@ -53,15 +54,16 @@ function Product({ products, reviews, setReviews }) {
               <Label>SKU: {sku} </Label>
             </Item.Description>
             <Item.Description>
-              <Rating
-                className='star-icon rating'
-                initialRating={average}
-                readonly={true}
-                emptySymbol='fa fa-star-o fa-2x'
-                fullSymbol='fa fa-star fa-2x'
-                fractions={10}
-              />{' '}
-              <span className='average'>{isNaN(average) ? '' : average}</span>
+              <RatingContainer>
+                <Rating
+                  initialRating={average}
+                  readonly={true}
+                  emptySymbol='fa fa-star-o fa-2x'
+                  fullSymbol='fa fa-star fa-2x'
+                  fractions={10}
+                />
+                <Average>{isNaN(average) ? '' : average}</Average>
+              </RatingContainer>
             </Item.Description>
             <Divider />
             <Item.Extra>

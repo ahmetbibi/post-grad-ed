@@ -1,17 +1,16 @@
 import Product from './components/Product';
 import ProductList from './components/ProductList';
 import React, { useState } from 'react';
-import { Container } from 'semantic-ui-react';
 import products from './static/products.json';
-import './App.scss';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Wrapper from './components/styles/Wrapper';
 
 function App() {
   const [reviews, setReviews] = useState([]);
 
   return (
     <Router>
-      <Container text className='container'>
+      <Wrapper text style={{ paddingTop: '2em' }}>
         <Switch>
           <Route exact path='/' render={() => <ProductList products={products} />} />
           <Route
@@ -19,7 +18,7 @@ function App() {
             render={() => <Product products={products} reviews={reviews} setReviews={setReviews} />}
           />
         </Switch>
-      </Container>
+      </Wrapper>
     </Router>
   );
 }
