@@ -3,7 +3,13 @@ import ProductList from './components/ProductList';
 import React, { useState } from 'react';
 import products from './static/products.json';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Wrapper from './components/styled-components/Wrapper';
+import 'font-awesome/css/font-awesome.css';
+import styled from 'styled-components';
+import { Container } from 'semantic-ui-react';
+
+const Wrapper = styled(Container)`
+  padding-top: 2em;
+`;
 
 function App() {
   const [reviews, setReviews] = useState([]);
