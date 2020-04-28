@@ -3,14 +3,14 @@ import ProductList from './components/ProductList';
 import React, { useState } from 'react';
 import products from './static/products.json';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Wrapper from './components/styles/Wrapper';
+import Wrapper from './components/styled-components/Wrapper';
 
 function App() {
   const [reviews, setReviews] = useState([]);
 
   return (
     <Router>
-      <Wrapper text style={{ paddingTop: '2em' }}>
+      <Wrapper text>
         <Switch>
           <Route exact path='/' render={() => <ProductList products={products} />} />
           <Route
